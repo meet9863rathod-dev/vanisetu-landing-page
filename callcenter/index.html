@@ -139,6 +139,40 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Rename brand: VaniSetu -> VanisSetu AI
     template = template.replace(/VaniSetu(\s+AI)?/g, 'VanisSetu AI');
 
+    // Make Edesy widget call button robust with polling and selector fallbacks
+    template = template.replace(
+      /const\s+r\s*=\s*document\.getElementById\('voice-widget-root'\);[\s\S]*?if\s*\(b\)\s*b\.click\(\);/g,
+      `e.preventDefault();
+      const triggerCall = () => {
+        const r = document.getElementById('voice-widget-root');
+        if (r && r.shadowRoot) {
+          const b = r.shadowRoot.querySelector('.vw-button') || r.shadowRoot.querySelector('button') || r.shadowRoot.querySelector('div[role="button"]');
+          if (b) {
+            b.click();
+            return true;
+          }
+        }
+        return false;
+      };
+      if (!triggerCall()) {
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<span>⏳ કનેક્ટ થઈ રહ્યું છે...</span>';
+        const checkInterval = setInterval(() => {
+          if (triggerCall()) {
+            clearInterval(checkInterval);
+            btn.innerHTML = originalText;
+          }
+        }, 300);
+        setTimeout(() => {
+          clearInterval(checkInterval);
+          if (btn.innerHTML === '<span>⏳ કનેક્ટ થઈ રહ્યું છે...</span>') {
+            btn.innerHTML = originalText;
+            alert("કનેક્શન નિષ્ફળ થયું. કૃપા કરીને પૃષ્ઠ ફરીથી લોડ કરો.");
+          }
+        }, 6000);
+      }`
+    );
+
     // Parse the template and swap the root element. Scripts inserted via
     // DOMParser/replaceWith are inert per spec — re-create each with
     // createElement so they execute, awaiting onload for src scripts to
