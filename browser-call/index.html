@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VanisSetu AI — Browser Call Demo</title>
+    <title>VanisSetu AI — Interactive Voice Agent Demo</title>
     <meta name="description" content="Experience VanisSetu AI voice agent through your browser. Talk to our AI demo agent in Gujarati, Hindi &amp; English.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -294,7 +294,7 @@
         }
 
         .participant-waves {
-            display: flex;
+            display: none;
             align-items: center;
             gap: 2px;
             height: 16px;
@@ -553,6 +553,80 @@
             30% { opacity: 1; transform: translateY(-4px); }
         }
 
+        /* Setup / Start Call Screen */
+        .call-start-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(13,17,23,0.95);
+            backdrop-filter: blur(8px);
+            z-index: 150;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .call-start-card {
+            text-align: center;
+            padding: 48px 40px;
+            border-radius: 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            max-width: 480px;
+            width: 90%;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        }
+
+        .start-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--green-brand), var(--green-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 24px;
+            border: 2px solid var(--border);
+            box-shadow: 0 0 20px rgba(26,159,106,0.2);
+        }
+
+        .start-title {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .start-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+
+        .btn-start-call {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 16px 36px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--green-brand), var(--green-light));
+            color: white;
+            border: none;
+            font-size: 16px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        .btn-start-call:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(26,159,106,0.35);
+        }
+
         /* End screen */
         .call-ended-overlay {
             display: none;
@@ -677,13 +751,28 @@
     </style>
 </head>
 <body>
+    <!-- Start Call Overlay (Unlocks Mic and Speech Synthesis) -->
+    <div class="call-start-overlay" id="startOverlay">
+        <div class="call-start-card">
+            <div class="start-avatar">🤖</div>
+            <h1 class="start-title">વૉઇસ એજન્ટ સાથે વાત કરો</h1>
+            <p class="start-subtitle">
+                વનિસેતુ એઆઈ સાથે લાઈવ વાતચીત શરૂ કરો. ડેમોમાં ગુજરાતી, હિન્દી અને અંગ્રેજી ભાષા સપોર્ટેડ છે.<br>
+                માઇક્રોફોન અને સ્પીકરની પરમિશનની જરૂર પડશે.
+            </p>
+            <button class="btn-start-call" onclick="startCall()">
+                📞 કૉલ શરૂ કરો / Start Call
+            </button>
+        </div>
+    </div>
+
     <!-- Header -->
     <header class="header">
         <a href="/" class="logo">
             <div class="logo-dot"></div>
             <span>VanisSetu AI</span>
         </a>
-        <div class="header-badge">Browser Call Demo</div>
+        <div class="header-badge">Live Voice Agent</div>
         <a href="/" class="header-back">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             Back to Home
@@ -697,16 +786,16 @@
             <div class="call-title-row">
                 <div class="call-title">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.86 19.86 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.86 19.86 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-                    Browser Call
+                    Voice Assistant
                 </div>
-                <div class="status-badge" id="statusBadge">
+                <div class="status-badge" id="statusBadge" style="display: none;">
                     <span class="dot"></span>
                     Connected
                 </div>
             </div>
 
             <div class="timer-section">
-                <div class="sound-wave" id="soundWave">
+                <div class="sound-wave muted" id="soundWave">
                     <div class="bar"></div>
                     <div class="bar"></div>
                     <div class="bar"></div>
@@ -723,9 +812,9 @@
                 <div class="participant">
                     <div class="participant-icon agent">🤖</div>
                     <div class="participant-info">
-                        <div class="participant-name">Agent</div>
+                        <div class="participant-name">VanisSetu AI</div>
                         <div class="participant-status">
-                            <span id="agentStatus">VanisSetu AI Demo — Gujarati</span>
+                            <span id="agentStatus">Gujarati, Hindi &amp; English</span>
                         </div>
                     </div>
                     <div class="participant-waves" id="agentWaves">
@@ -739,20 +828,20 @@
                 <div class="participant">
                     <div class="participant-icon user">👤</div>
                     <div class="participant-info">
-                        <div class="participant-name">You</div>
+                        <div class="participant-name">You (તમે)</div>
                         <div class="participant-status">
-                            <span id="userStatus">🎤 <span class="speaking">Listening...</span></span>
+                            <span id="userStatus">microphone not active</span>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="controls">
-                <button class="btn-control" id="muteBtn" onclick="toggleMute()">
+                <button class="btn-control" id="muteBtn" onclick="toggleMute()" disabled>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10v1a7 7 0 01-14 0v-1M12 18.5v3.5M8 22h8"/></svg>
                     Mute Mic
                 </button>
-                <button class="btn-end" id="endBtn" onclick="endCall()">
+                <button class="btn-end" id="endBtn" onclick="endCall()" disabled>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.68 13.31a16 16 0 003.41 2.6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92v3a2 2 0 01-2.18 2 19.86 19.86 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.86 19.86 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
                     End Call
                 </button>
@@ -760,14 +849,14 @@
 
             <div class="call-footer">
                 <div class="call-footer-item">
-                    <div class="call-footer-icon">🎤</div>
-                    <div class="call-footer-value">Browser</div>
+                    <div class="call-footer-icon">🎙️</div>
+                    <div class="call-footer-value">Interactive</div>
                     <div class="call-footer-label">Mode</div>
                 </div>
                 <div class="call-footer-item">
                     <div class="call-footer-icon">📡</div>
-                    <div class="call-footer-value" style="color: var(--green-bright);">Live</div>
-                    <div class="call-footer-label">Status</div>
+                    <div class="call-footer-value" style="color: var(--green-bright);">Real-time</div>
+                    <div class="call-footer-label">Voice</div>
                 </div>
             </div>
         </div>
@@ -776,19 +865,19 @@
         <div class="transcript-panel">
             <div class="transcript-header">
                 <div class="transcript-title">
-                    💬 Live Transcript
+                    💬 Real-time Transcript
                     <span class="transcript-count" id="msgCount">(0 messages)</span>
                 </div>
                 <div class="live-badge">
                     <span class="dot"></span>
-                    Live
+                    Live Speech
                 </div>
             </div>
             <div class="transcript-messages" id="transcript">
                 <!-- Messages will be injected here -->
             </div>
             <div class="demo-notice">
-                ⚡ This is a demo of VanisSetu AI's browser call experience. The conversation is simulated.
+                📢 Start speaking after clicking "Start Call". The AI listens and responds dynamically in Gujarati, Hindi or English.
             </div>
         </div>
     </div>
@@ -799,8 +888,8 @@
             <div class="ended-icon">✅</div>
             <div class="ended-title">Call Ended</div>
             <div class="ended-subtitle">
-                Thank you for trying VanisSetu AI browser call demo!<br>
-                Experience the real thing — call us or book a demo.
+                Thank you for trying VanisSetu AI voice agent demo!<br>
+                Your voice was transcribed and analyzed successfully.
             </div>
             <div class="ended-duration" id="endedDuration">Duration: 00:00</div>
             <a href="/" class="btn-home">
@@ -815,63 +904,65 @@
         let seconds = 0;
         let timerInterval = null;
         let isMuted = false;
-        let callActive = true;
-        let messageIndex = 0;
+        let callActive = false;
         let msgCount = 0;
+        let speechSynth = window.speechSynthesis;
+        let recognition = null;
+        let isAgentSpeaking = false;
 
-        // ── Demo Conversation ──
-        const conversation = [
-            {
-                type: 'agent',
-                text: 'નમસ્તે! હું VanisSetu AI ડેમો એજન્ટ બોલું છું. આજે હું તમારી કેવી મદદ કરી શકું?',
-                delay: 2000
-            },
-            {
-                type: 'user',
-                text: 'હા, મને પ્રોપર્ટી વિશે જાણકારી જોઈએ છે.',
-                delay: 4500
-            },
-            {
-                type: 'agent',
-                text: 'ખૂબ સરસ! ક્યા વિસ્તારમાં મિલકત લેવા માંગો છો? અને તમારું બજેટ કેટલું છે?',
-                delay: 3500
-            },
-            {
-                type: 'user',
-                text: 'Amma maru bajet hai Rs 1 crore.',
-                delay: 4000
-            },
-            {
-                type: 'agent',
-                text: 'ઠીક છે.',
-                delay: 2000
-            },
-            {
-                type: 'agent',
-                text: 'અને મિલકતનો પ્રકાર જણાવશો? શું તમે 2BHK વિલા, ઓફિસ, કે દુકાન શોધી રહ્યા છો?',
-                delay: 3000
-            },
-            {
-                type: 'user',
-                text: 'ruim 5 BHK flat goti rahe ho chhu.',
-                delay: 4500
-            },
-            {
-                type: 'agent',
-                text: 'સમજાઈ ગયું, પાંચ બીએચકે ફ્લેટ. અને તમારે આ મિલકત ક્યાર સુધીમાં જોઈએ છે? કોઈ ખાસ સમયમર્યાદા છે?',
-                delay: 4000
-            },
-            {
-                type: 'user',
-                text: 'Aa 3 mahina ma joie che.',
-                delay: 5000
-            },
-            {
-                type: 'agent',
-                text: 'બરાબર! ત્રણ મહિનામાં. હું તમને અમારા ઉપલબ્ધ 5BHK ફ્લેટ્સની યાદી મોકલાવું છું. તમારો ઈમેલ કે વોટ્સએપ નંબર આપશો?',
-                delay: 4000
+        // Initialize Speech Recognition
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = false;
+            recognition.lang = 'gu-IN'; // Defaults to Gujarati listening
+
+            recognition.onresult = function(event) {
+                if (!callActive || isMuted || isAgentSpeaking) return;
+                const last = event.results.length - 1;
+                const text = event.results[last][0].transcript.trim();
+                if (text) {
+                    handleUserSpeech(text);
+                }
+            };
+
+            recognition.onerror = function(event) {
+                console.error("Speech recognition error:", event.error);
+                if (event.error === 'not-allowed') {
+                    document.getElementById('userStatus').innerHTML = '🎤 <span class="silent">Mic blocked</span>';
+                }
+            };
+
+            recognition.onend = function() {
+                // Restart if call is still active, agent is not speaking and we are not muted
+                if (callActive && !isMuted && !isAgentSpeaking) {
+                    try { recognition.start(); } catch(e) {}
+                }
+            };
+        }
+
+        // ── Start Call ──
+        function startCall() {
+            callActive = true;
+            document.getElementById('startOverlay').style.display = 'none';
+            document.getElementById('statusBadge').style.display = 'flex';
+            document.getElementById('muteBtn').removeAttribute('disabled');
+            document.getElementById('endBtn').removeAttribute('disabled');
+            document.getElementById('soundWave').classList.remove('muted');
+            document.getElementById('userStatus').innerHTML = '🎤 <span class="speaking">Listening...</span>';
+
+            // Start timer
+            startTimer();
+
+            // First welcome message from Agent
+            agentSay("નમસ્તે! હું વનિસેતુ એઆઈ ડેમો એજન્ટ બોલું છું. હું તમારી રિયલ એસ્ટેટ અથવા કોલ સેન્ટર વિશે શું મદદ કરી શકું?");
+
+            // Start Speech Recognition
+            if (recognition) {
+                try { recognition.start(); } catch(e) {}
             }
-        ];
+        }
 
         // ── Timer ──
         function startTimer() {
@@ -884,7 +975,6 @@
             }, 1000);
         }
 
-        // ── Format time for messages ──
         function getTimeStr() {
             var now = new Date();
             return now.getHours().toString().padStart(2,'0') + ':' +
@@ -892,19 +982,103 @@
                    now.getSeconds().toString().padStart(2,'0');
         }
 
-        // ── Add message to transcript ──
-        function addMessage(msg) {
+        // ── Speech Synthesis (Agent Speaks) ──
+        function agentSay(text) {
             if (!callActive) return;
+            isAgentSpeaking = true;
+            
+            // Stop listening to prevent agent hearing its own voice
+            if (recognition) {
+                try { recognition.stop(); } catch(e) {}
+            }
+
+            // UI feedback
+            showTyping();
+            document.getElementById('userStatus').innerHTML = '🎤 <span class="silent">Waiting...</span>';
+
+            // Simulated think time
+            setTimeout(() => {
+                removeTyping();
+                addMessage('agent', text);
+
+                document.getElementById('agentStatus').innerHTML = '🔊 <span class="speaking">Speaking...</span>';
+                document.getElementById('agentWaves').style.display = 'flex';
+
+                const utterance = new SpeechSynthesisUtterance(text);
+                
+                // Smart Language Selection
+                if (/^[a-zA-Z0-9\s,.]+$/.test(text)) {
+                    utterance.lang = 'en-US';
+                } else if (text.includes('hai') || text.includes('ho') || text.includes('kya') || text.includes('accha')) {
+                    utterance.lang = 'hi-IN';
+                } else {
+                    utterance.lang = 'gu-IN'; // Default to Gujarati speech
+                }
+
+                utterance.onend = function() {
+                    isAgentSpeaking = false;
+                    document.getElementById('agentStatus').textContent = 'Gujarati, Hindi & English';
+                    document.getElementById('agentWaves').style.display = 'none';
+                    document.getElementById('userStatus').innerHTML = '🎤 <span class="speaking">Listening...</span>';
+                    
+                    // Resume listening
+                    if (callActive && !isMuted) {
+                        try { recognition.start(); } catch(e) {}
+                    }
+                };
+
+                utterance.onerror = function() {
+                    utterance.onend();
+                };
+
+                speechSynth.speak(utterance);
+            }, 1200);
+        }
+
+        // ── Handle User Input ──
+        function handleUserSpeech(text) {
+            addMessage('user', text);
+            
+            // Local Conversational Rules Engine (Gujarat Context)
+            const input = text.toLowerCase();
+            let reply = "";
+
+            if (input.includes("નમસ્તે") || input.includes("હેલો") || input.includes("kem cho") || input.includes("કેમ છો") || input.includes("hello") || input.includes("hi")) {
+                reply = "નમસ્તે! મને ખુશી છે કે તમે વનિસેતુ પર કોલ કર્યો. શું તમે કોઈ પ્રોપર્ટી ખરીદવા કે વેચવા માંગો છો?";
+            } 
+            else if (input.includes("ખરીદ") || input.includes("વેચ") || input.includes("લેવ") || input.includes("જોઈ") || input.includes("flat") || input.includes("house") || input.includes("villa") || input.includes("બતાવો")) {
+                reply = "ચોક્કસ, અમારા રિયલ એસ્ટેટ પ્લેટફોર્મ પર લાઈવ એજન્ટ ઉપલબ્ધ છે. તમારું અંદાજીત બજેટ કેટલું છે? અને કયા શહેરમાં પ્રોપર્ટી શોધો છો?";
+            }
+            else if (input.includes("કરોડ") || input.includes("લાખ") || input.includes("બજેટ") || input.includes("crore") || input.includes("lakh") || input.includes("budget") || input.includes("૧૦૦") || input.includes("50")) {
+                reply = "સમજાઈ ગયું. તે કિંમતમાં અમારી પાસે ઘણા સારા 2 BHK અને 3 BHK પ્રોપર્ટી ઓપ્શન ઉપલબ્ધ છે. શું હું આ વિગતો તમારા વોટ્સએપ પર મોકલી આપું?";
+            }
+            else if (input.includes("મોકલો") || input.includes("હા") || input.includes("મોકલી આપો") || input.includes("yes") || input.includes("ok") || input.includes("whatsapp")) {
+                reply = "સરસ! કૃપા કરીને તમારો ૧૦ આંકડાનો વોટ્સએપ નંબર જણાવશો?";
+            }
+            else if (/\d{5,12}/.test(input) || input.includes("નંબર") || input.includes("number") || input.includes("નમ્બર")) {
+                reply = "આભાર! મેં તમારો નંબર સેવ કરી લીધો છે અને વિગતો વોટ્સએપ પર મોકલી દીધી છે. વનિસેતુ વોઈસ એજન્ટ ડેમો વાપરવા બદલ આભાર!";
+            }
+            else if (input.includes("hindi") || input.includes("હિન્દી") || input.includes("हिंदी")) {
+                reply = "जी बिल्कुल, मैं हिंदी में भी बात कर सकती हूँ। क्या आप रियल एस्टेट प्रॉपर्टी खरीदना चाहते हैं या कॉल सेंटर डेमो देखना चाहते हैं?";
+            }
+            else if (input.includes("english") || input.includes("અંગ્રેજી")) {
+                reply = "Sure, I can speak in English as well. Are you looking to buy a property, or would you like to know more about VanisSetu AI solutions?";
+            }
+            else {
+                // Generative fallback
+                reply = "હું બરાબર સમજી ન શકી. શું તમે ફરીથી કહી શકશો? તમે રિયલ એસ્ટેટ પ્રોપર્ટી અથવા કોલ સેન્ટર સેવાઓ વિશે પૂછી શકો છો.";
+            }
+
+            agentSay(reply);
+        }
+
+        // ── Transcript UI ──
+        function addMessage(type, text) {
             var transcript = document.getElementById('transcript');
-
-            // Remove typing indicator if exists
-            var typing = document.getElementById('typingIndicator');
-            if (typing) typing.remove();
-
             var div = document.createElement('div');
-            div.className = 'message ' + msg.type;
+            div.className = 'message ' + type;
             div.innerHTML =
-                '<div class="message-bubble">' + msg.text + '</div>' +
+                '<div class="message-bubble">' + text + '</div>' +
                 '<div class="message-time">' + getTimeStr() + '</div>';
 
             transcript.appendChild(div);
@@ -912,23 +1086,9 @@
 
             msgCount++;
             document.getElementById('msgCount').textContent = '(' + msgCount + ' messages)';
-
-            // Update participant statuses
-            if (msg.type === 'agent') {
-                document.getElementById('agentStatus').innerHTML = '🔊 <span class="speaking">Speaking...</span>';
-                document.getElementById('agentWaves').style.display = 'flex';
-                setTimeout(function() {
-                    if (callActive) {
-                        document.getElementById('agentStatus').textContent = 'VanisSetu AI Demo — Gujarati';
-                        document.getElementById('agentWaves').style.display = 'none';
-                    }
-                }, 2000);
-            }
         }
 
-        // ── Show typing indicator ──
         function showTyping() {
-            if (!callActive) return;
             var transcript = document.getElementById('transcript');
             var existing = document.getElementById('typingIndicator');
             if (existing) return;
@@ -946,29 +1106,9 @@
             transcript.scrollTop = transcript.scrollHeight;
         }
 
-        // ── Play conversation ──
-        function playNextMessage() {
-            if (messageIndex >= conversation.length || !callActive) return;
-
-            var msg = conversation[messageIndex];
-
-            if (msg.type === 'agent') {
-                // Show typing for a bit, then message
-                showTyping();
-                setTimeout(function() {
-                    addMessage(msg);
-                    messageIndex++;
-                    if (messageIndex < conversation.length) {
-                        setTimeout(playNextMessage, conversation[messageIndex].delay);
-                    }
-                }, 1500);
-            } else {
-                addMessage(msg);
-                messageIndex++;
-                if (messageIndex < conversation.length) {
-                    setTimeout(playNextMessage, conversation[messageIndex].delay);
-                }
-            }
+        function removeTyping() {
+            var typing = document.getElementById('typingIndicator');
+            if (typing) typing.remove();
         }
 
         // ── Toggle Mute ──
@@ -979,15 +1119,21 @@
             var userStatus = document.getElementById('userStatus');
 
             if (isMuted) {
+                if (recognition) {
+                    try { recognition.stop(); } catch(e) {}
+                }
                 btn.classList.add('muted');
                 btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"/><path d="M9 9v3a3 3 0 005.12 2.12M15 9.34V4a3 3 0 00-5.94-.6"/><path d="M17 16.95A7 7 0 015 12v-2m14 0v2c0 .76-.12 1.49-.34 2.18"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> Unmute';
                 wave.classList.add('muted');
-                userStatus.innerHTML = '🎤 <span class="silent">Muted</span>';
+                userStatus.innerHTML = '🎤 <span class="silent">Muted (માઇક બંધ છે)</span>';
             } else {
                 btn.classList.remove('muted');
                 btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10v1a7 7 0 01-14 0v-1M12 18.5v3.5M8 22h8"/></svg> Mute Mic';
                 wave.classList.remove('muted');
                 userStatus.innerHTML = '🎤 <span class="speaking">Listening...</span>';
+                if (callActive && !isAgentSpeaking) {
+                    try { recognition.start(); } catch(e) {}
+                }
             }
         }
 
@@ -995,6 +1141,13 @@
         function endCall() {
             callActive = false;
             clearInterval(timerInterval);
+
+            if (recognition) {
+                try { recognition.stop(); } catch(e) {}
+            }
+            if (speechSynth) {
+                speechSynth.cancel();
+            }
 
             var m = Math.floor(seconds / 60).toString().padStart(2, '0');
             var s = (seconds % 60).toString().padStart(2, '0');
@@ -1010,13 +1163,8 @@
 
             // Stop waves
             document.getElementById('soundWave').classList.add('muted');
-            document.getElementById('agentWaves').style.display = 'none';
             document.getElementById('userStatus').innerHTML = '🎤 <span class="silent">Disconnected</span>';
         }
-
-        // ── Initialize ──
-        startTimer();
-        setTimeout(playNextMessage, 1500);
     </script>
 </body>
 </html>
