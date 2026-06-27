@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VanisSetu AI — Browser Call Demo</title>
+    <meta name="description" content="Experience VanisSetu AI voice agent through your browser. Talk to our AI demo agent in Gujarati, Hindi &amp; English.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-primary: #0d1117;
+            --bg-card: #161b22;
+            --bg-card-hover: #1c2128;
+            --border: #30363d;
+            --green-brand: #0A5C3E;
+            --green-light: #1a9f6a;
+            --green-bright: #3fb950;
+            --gold: #D49A2A;
+            --red: #f85149;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --text-muted: #484f58;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        /* ── Header ── */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 32px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(13,17,23,0.85);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .logo-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), #e8b84a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: rgba(26,159,106,0.12);
+            border: 1px solid rgba(26,159,106,0.25);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--green-light);
+        }
+
+        .header-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--green-bright);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        .header-back {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .header-back:hover { color: var(--text-primary); }
+
+        /* ── Main Layout ── */
+        .main {
+            display: grid;
+            grid-template-columns: 420px 1fr;
+            gap: 0;
+            min-height: calc(100vh - 65px);
+        }
+
+        @media (max-width: 900px) {
+            .main {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr;
+            }
+        }
+
+        /* ── Call Panel ── */
+        .call-panel {
+            border-right: 1px solid var(--border);
+            padding: 32px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            background: var(--bg-card);
+        }
+
+        .call-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .call-title {
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .call-title svg {
+            width: 20px;
+            height: 20px;
+            color: var(--green-light);
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(63,185,80,0.12);
+            color: var(--green-bright);
+            border: 1px solid rgba(63,185,80,0.25);
+        }
+
+        .status-badge .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--green-bright);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.85); }
+        }
+
+        /* Timer */
+        .timer-section {
+            text-align: center;
+            padding: 28px 0;
+        }
+
+        .timer {
+            font-size: 56px;
+            font-weight: 300;
+            letter-spacing: 4px;
+            font-variant-numeric: tabular-nums;
+            color: var(--text-primary);
+        }
+
+        .timer-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Sound wave */
+        .sound-wave {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            height: 32px;
+            margin: 8px 0;
+        }
+
+        .sound-wave .bar {
+            width: 4px;
+            border-radius: 4px;
+            background: var(--green-light);
+            animation: wave 1.2s ease-in-out infinite;
+        }
+
+        .sound-wave .bar:nth-child(1) { height: 8px; animation-delay: 0s; }
+        .sound-wave .bar:nth-child(2) { height: 16px; animation-delay: 0.1s; }
+        .sound-wave .bar:nth-child(3) { height: 24px; animation-delay: 0.2s; }
+        .sound-wave .bar:nth-child(4) { height: 32px; animation-delay: 0.3s; }
+        .sound-wave .bar:nth-child(5) { height: 24px; animation-delay: 0.4s; }
+        .sound-wave .bar:nth-child(6) { height: 16px; animation-delay: 0.5s; }
+        .sound-wave .bar:nth-child(7) { height: 8px; animation-delay: 0.6s; }
+
+        .sound-wave.muted .bar {
+            animation: none;
+            height: 4px !important;
+            background: var(--text-muted);
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: scaleY(0.4); }
+            50% { transform: scaleY(1); }
+        }
+
+        /* Participants */
+        .participants {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .participant {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+        }
+
+        .participant-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .participant-icon.agent {
+            background: linear-gradient(135deg, var(--green-brand), var(--green-light));
+        }
+
+        .participant-icon.user {
+            background: rgba(139,148,158,0.15);
+            border: 1px solid var(--border);
+        }
+
+        .participant-info { flex: 1; }
+
+        .participant-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .participant-status {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .participant-status .speaking {
+            color: var(--green-bright);
+        }
+
+        .participant-status .silent {
+            color: var(--text-muted);
+        }
+
+        .participant-waves {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            height: 16px;
+        }
+
+        .participant-waves .mini-bar {
+            width: 3px;
+            border-radius: 2px;
+            background: var(--green-bright);
+            animation: wave 0.8s ease-in-out infinite;
+        }
+
+        .participant-waves .mini-bar:nth-child(1) { height: 6px; animation-delay: 0s; }
+        .participant-waves .mini-bar:nth-child(2) { height: 12px; animation-delay: 0.15s; }
+        .participant-waves .mini-bar:nth-child(3) { height: 8px; animation-delay: 0.3s; }
+        .participant-waves .mini-bar:nth-child(4) { height: 14px; animation-delay: 0.1s; }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-top: auto;
+        }
+
+        .btn-control {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-control:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--text-muted);
+        }
+
+        .btn-control.muted {
+            background: rgba(248,81,73,0.1);
+            border-color: rgba(248,81,73,0.3);
+            color: var(--red);
+        }
+
+        .btn-end {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, #da3633, var(--red));
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-end:hover {
+            background: linear-gradient(135deg, #c62828, #da3633);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(248,81,73,0.3);
+        }
+
+        /* Mode footer */
+        .call-footer {
+            display: flex;
+            justify-content: center;
+            gap: 48px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .call-footer-item {
+            text-align: center;
+        }
+
+        .call-footer-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .call-footer-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .call-footer-value {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        /* ── Transcript Panel ── */
+        .transcript-panel {
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-primary);
+        }
+
+        .transcript-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 28px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .transcript-title {
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .transcript-count {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .live-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 8px;
+            background: rgba(248,81,73,0.1);
+            border: 1px solid rgba(248,81,73,0.2);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--red);
+        }
+
+        .live-badge .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--red);
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+
+        .transcript-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .message {
+            display: flex;
+            flex-direction: column;
+            max-width: 85%;
+            animation: messageIn 0.4s ease-out;
+        }
+
+        .message.agent {
+            align-self: flex-start;
+        }
+
+        .message.user {
+            align-self: flex-end;
+        }
+
+        @keyframes messageIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message-bubble {
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.6;
+            word-wrap: break-word;
+        }
+
+        .message.agent .message-bubble {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-bottom-left-radius: 4px;
+            color: var(--text-primary);
+        }
+
+        .message.user .message-bubble {
+            background: linear-gradient(135deg, var(--green-brand), #0d7a50);
+            border-bottom-right-radius: 4px;
+            color: white;
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .message.agent .message-time {
+            margin-left: 4px;
+        }
+
+        .message.user .message-time {
+            text-align: right;
+            margin-right: 4px;
+        }
+
+        /* Typing indicator */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 12px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            border-bottom-left-radius: 4px;
+            width: fit-content;
+        }
+
+        .typing-indicator .dot-typing {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--text-secondary);
+            animation: typing 1.4s ease-in-out infinite;
+        }
+
+        .typing-indicator .dot-typing:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator .dot-typing:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+            30% { opacity: 1; transform: translateY(-4px); }
+        }
+
+        /* End screen */
+        .call-ended-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(13,17,23,0.92);
+            backdrop-filter: blur(8px);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .call-ended-overlay.active {
+            display: flex;
+        }
+
+        .call-ended-card {
+            text-align: center;
+            padding: 48px 56px;
+            border-radius: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            max-width: 440px;
+            width: 90%;
+            animation: fadeUp 0.5s ease-out;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .ended-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: rgba(63,185,80,0.12);
+            border: 1px solid rgba(63,185,80,0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 28px;
+        }
+
+        .ended-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .ended-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .ended-duration {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 28px;
+        }
+
+        .btn-home {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--green-brand), var(--green-light));
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: inherit;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-home:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(26,159,106,0.3);
+        }
+
+        /* Demo notice */
+        .demo-notice {
+            padding: 12px 28px;
+            background: rgba(212,154,42,0.08);
+            border-top: 1px solid rgba(212,154,42,0.15);
+            font-size: 12px;
+            color: var(--gold);
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        /* Scrollbar */
+        .transcript-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+        .transcript-messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .transcript-messages::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        @media (max-width: 900px) {
+            .header { padding: 12px 16px; }
+            .call-panel { padding: 20px 16px; }
+            .transcript-messages { padding: 16px; }
+            .transcript-header { padding: 14px 16px; }
+            .timer { font-size: 40px; }
+            .main { min-height: auto; }
+            .call-panel { border-right: none; border-bottom: 1px solid var(--border); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <a href="/" class="logo">
+            <div class="logo-dot"></div>
+            <span>VanisSetu AI</span>
+        </a>
+        <div class="header-badge">Browser Call Demo</div>
+        <a href="/" class="header-back">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Back to Home
+        </a>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main">
+        <!-- Call Panel -->
+        <div class="call-panel">
+            <div class="call-title-row">
+                <div class="call-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.86 19.86 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.86 19.86 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+                    Browser Call
+                </div>
+                <div class="status-badge" id="statusBadge">
+                    <span class="dot"></span>
+                    Connected
+                </div>
+            </div>
+
+            <div class="timer-section">
+                <div class="sound-wave" id="soundWave">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+                <div class="timer" id="timer">00:00</div>
+                <div class="timer-label">Duration</div>
+            </div>
+
+            <div class="participants">
+                <div class="participant">
+                    <div class="participant-icon agent">🤖</div>
+                    <div class="participant-info">
+                        <div class="participant-name">Agent</div>
+                        <div class="participant-status">
+                            <span id="agentStatus">VanisSetu AI Demo — Gujarati</span>
+                        </div>
+                    </div>
+                    <div class="participant-waves" id="agentWaves">
+                        <div class="mini-bar"></div>
+                        <div class="mini-bar"></div>
+                        <div class="mini-bar"></div>
+                        <div class="mini-bar"></div>
+                    </div>
+                </div>
+
+                <div class="participant">
+                    <div class="participant-icon user">👤</div>
+                    <div class="participant-info">
+                        <div class="participant-name">You</div>
+                        <div class="participant-status">
+                            <span id="userStatus">🎤 <span class="speaking">Listening...</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn-control" id="muteBtn" onclick="toggleMute()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10v1a7 7 0 01-14 0v-1M12 18.5v3.5M8 22h8"/></svg>
+                    Mute Mic
+                </button>
+                <button class="btn-end" id="endBtn" onclick="endCall()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.68 13.31a16 16 0 003.41 2.6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92v3a2 2 0 01-2.18 2 19.86 19.86 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.86 19.86 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                    End Call
+                </button>
+            </div>
+
+            <div class="call-footer">
+                <div class="call-footer-item">
+                    <div class="call-footer-icon">🎤</div>
+                    <div class="call-footer-value">Browser</div>
+                    <div class="call-footer-label">Mode</div>
+                </div>
+                <div class="call-footer-item">
+                    <div class="call-footer-icon">📡</div>
+                    <div class="call-footer-value" style="color: var(--green-bright);">Live</div>
+                    <div class="call-footer-label">Status</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transcript Panel -->
+        <div class="transcript-panel">
+            <div class="transcript-header">
+                <div class="transcript-title">
+                    💬 Live Transcript
+                    <span class="transcript-count" id="msgCount">(0 messages)</span>
+                </div>
+                <div class="live-badge">
+                    <span class="dot"></span>
+                    Live
+                </div>
+            </div>
+            <div class="transcript-messages" id="transcript">
+                <!-- Messages will be injected here -->
+            </div>
+            <div class="demo-notice">
+                ⚡ This is a demo of VanisSetu AI's browser call experience. The conversation is simulated.
+            </div>
+        </div>
+    </div>
+
+    <!-- End Call Overlay -->
+    <div class="call-ended-overlay" id="endedOverlay">
+        <div class="call-ended-card">
+            <div class="ended-icon">✅</div>
+            <div class="ended-title">Call Ended</div>
+            <div class="ended-subtitle">
+                Thank you for trying VanisSetu AI browser call demo!<br>
+                Experience the real thing — call us or book a demo.
+            </div>
+            <div class="ended-duration" id="endedDuration">Duration: 00:00</div>
+            <a href="/" class="btn-home">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 6l6-4.5L14 6v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 14V8h4v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Back to VanisSetu AI
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // ── State ──
+        let seconds = 0;
+        let timerInterval = null;
+        let isMuted = false;
+        let callActive = true;
+        let messageIndex = 0;
+        let msgCount = 0;
+
+        // ── Demo Conversation ──
+        const conversation = [
+            {
+                type: 'agent',
+                text: 'નમસ્તે! હું VanisSetu AI ડેમો એજન્ટ બોલું છું. આજે હું તમારી કેવી મદદ કરી શકું?',
+                delay: 2000
+            },
+            {
+                type: 'user',
+                text: 'હા, મને પ્રોપર્ટી વિશે જાણકારી જોઈએ છે.',
+                delay: 4500
+            },
+            {
+                type: 'agent',
+                text: 'ખૂબ સરસ! ક્યા વિસ્તારમાં મિલકત લેવા માંગો છો? અને તમારું બજેટ કેટલું છે?',
+                delay: 3500
+            },
+            {
+                type: 'user',
+                text: 'Amma maru bajet hai Rs 1 crore.',
+                delay: 4000
+            },
+            {
+                type: 'agent',
+                text: 'ઠીક છે.',
+                delay: 2000
+            },
+            {
+                type: 'agent',
+                text: 'અને મિલકતનો પ્રકાર જણાવશો? શું તમે 2BHK વિલા, ઓફિસ, કે દુકાન શોધી રહ્યા છો?',
+                delay: 3000
+            },
+            {
+                type: 'user',
+                text: 'ruim 5 BHK flat goti rahe ho chhu.',
+                delay: 4500
+            },
+            {
+                type: 'agent',
+                text: 'સમજાઈ ગયું, પાંચ બીએચકે ફ્લેટ. અને તમારે આ મિલકત ક્યાર સુધીમાં જોઈએ છે? કોઈ ખાસ સમયમર્યાદા છે?',
+                delay: 4000
+            },
+            {
+                type: 'user',
+                text: 'Aa 3 mahina ma joie che.',
+                delay: 5000
+            },
+            {
+                type: 'agent',
+                text: 'બરાબર! ત્રણ મહિનામાં. હું તમને અમારા ઉપલબ્ધ 5BHK ફ્લેટ્સની યાદી મોકલાવું છું. તમારો ઈમેલ કે વોટ્સએપ નંબર આપશો?',
+                delay: 4000
+            }
+        ];
+
+        // ── Timer ──
+        function startTimer() {
+            timerInterval = setInterval(function() {
+                if (!callActive) return;
+                seconds++;
+                var m = Math.floor(seconds / 60).toString().padStart(2, '0');
+                var s = (seconds % 60).toString().padStart(2, '0');
+                document.getElementById('timer').textContent = m + ':' + s;
+            }, 1000);
+        }
+
+        // ── Format time for messages ──
+        function getTimeStr() {
+            var now = new Date();
+            return now.getHours().toString().padStart(2,'0') + ':' +
+                   now.getMinutes().toString().padStart(2,'0') + ':' +
+                   now.getSeconds().toString().padStart(2,'0');
+        }
+
+        // ── Add message to transcript ──
+        function addMessage(msg) {
+            if (!callActive) return;
+            var transcript = document.getElementById('transcript');
+
+            // Remove typing indicator if exists
+            var typing = document.getElementById('typingIndicator');
+            if (typing) typing.remove();
+
+            var div = document.createElement('div');
+            div.className = 'message ' + msg.type;
+            div.innerHTML =
+                '<div class="message-bubble">' + msg.text + '</div>' +
+                '<div class="message-time">' + getTimeStr() + '</div>';
+
+            transcript.appendChild(div);
+            transcript.scrollTop = transcript.scrollHeight;
+
+            msgCount++;
+            document.getElementById('msgCount').textContent = '(' + msgCount + ' messages)';
+
+            // Update participant statuses
+            if (msg.type === 'agent') {
+                document.getElementById('agentStatus').innerHTML = '🔊 <span class="speaking">Speaking...</span>';
+                document.getElementById('agentWaves').style.display = 'flex';
+                setTimeout(function() {
+                    if (callActive) {
+                        document.getElementById('agentStatus').textContent = 'VanisSetu AI Demo — Gujarati';
+                        document.getElementById('agentWaves').style.display = 'none';
+                    }
+                }, 2000);
+            }
+        }
+
+        // ── Show typing indicator ──
+        function showTyping() {
+            if (!callActive) return;
+            var transcript = document.getElementById('transcript');
+            var existing = document.getElementById('typingIndicator');
+            if (existing) return;
+
+            var div = document.createElement('div');
+            div.className = 'message agent';
+            div.id = 'typingIndicator';
+            div.innerHTML =
+                '<div class="typing-indicator">' +
+                '<div class="dot-typing"></div>' +
+                '<div class="dot-typing"></div>' +
+                '<div class="dot-typing"></div>' +
+                '</div>';
+            transcript.appendChild(div);
+            transcript.scrollTop = transcript.scrollHeight;
+        }
+
+        // ── Play conversation ──
+        function playNextMessage() {
+            if (messageIndex >= conversation.length || !callActive) return;
+
+            var msg = conversation[messageIndex];
+
+            if (msg.type === 'agent') {
+                // Show typing for a bit, then message
+                showTyping();
+                setTimeout(function() {
+                    addMessage(msg);
+                    messageIndex++;
+                    if (messageIndex < conversation.length) {
+                        setTimeout(playNextMessage, conversation[messageIndex].delay);
+                    }
+                }, 1500);
+            } else {
+                addMessage(msg);
+                messageIndex++;
+                if (messageIndex < conversation.length) {
+                    setTimeout(playNextMessage, conversation[messageIndex].delay);
+                }
+            }
+        }
+
+        // ── Toggle Mute ──
+        function toggleMute() {
+            isMuted = !isMuted;
+            var btn = document.getElementById('muteBtn');
+            var wave = document.getElementById('soundWave');
+            var userStatus = document.getElementById('userStatus');
+
+            if (isMuted) {
+                btn.classList.add('muted');
+                btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"/><path d="M9 9v3a3 3 0 005.12 2.12M15 9.34V4a3 3 0 00-5.94-.6"/><path d="M17 16.95A7 7 0 015 12v-2m14 0v2c0 .76-.12 1.49-.34 2.18"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> Unmute';
+                wave.classList.add('muted');
+                userStatus.innerHTML = '🎤 <span class="silent">Muted</span>';
+            } else {
+                btn.classList.remove('muted');
+                btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10v1a7 7 0 01-14 0v-1M12 18.5v3.5M8 22h8"/></svg> Mute Mic';
+                wave.classList.remove('muted');
+                userStatus.innerHTML = '🎤 <span class="speaking">Listening...</span>';
+            }
+        }
+
+        // ── End Call ──
+        function endCall() {
+            callActive = false;
+            clearInterval(timerInterval);
+
+            var m = Math.floor(seconds / 60).toString().padStart(2, '0');
+            var s = (seconds % 60).toString().padStart(2, '0');
+            document.getElementById('endedDuration').textContent = 'Duration: ' + m + ':' + s;
+
+            document.getElementById('endedOverlay').classList.add('active');
+
+            // Update status
+            document.getElementById('statusBadge').innerHTML = '<span class="dot" style="background:var(--red);animation:none;"></span> Disconnected';
+            document.getElementById('statusBadge').style.background = 'rgba(248,81,73,0.12)';
+            document.getElementById('statusBadge').style.color = 'var(--red)';
+            document.getElementById('statusBadge').style.borderColor = 'rgba(248,81,73,0.25)';
+
+            // Stop waves
+            document.getElementById('soundWave').classList.add('muted');
+            document.getElementById('agentWaves').style.display = 'none';
+            document.getElementById('userStatus').innerHTML = '🎤 <span class="silent">Disconnected</span>';
+        }
+
+        // ── Initialize ──
+        startTimer();
+        setTimeout(playNextMessage, 1500);
+    </script>
+</body>
+</html>

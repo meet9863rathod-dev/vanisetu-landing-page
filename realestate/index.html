@@ -139,6 +139,10 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Rename brand: VaniSetu -> VanisSetu AI
     template = template.replace(/VaniSetu(\s+AI)?/g, 'VanisSetu AI');
 
+    // Make browser call button click redirect to browser-call page
+    const browserCallUrl = window.location.protocol === 'file:' ? (window.location.pathname.includes('/realestate/') || window.location.pathname.includes('/callcenter/') ? '../browser-call/index.html' : 'browser-call/index.html') : '/browser-call/';
+    template = template.replace('class="guj btn-web-call"', `class="guj btn-web-call" onclick="window.location.href='${browserCallUrl}'"`);
+
     // Parse the template and swap the root element. Scripts inserted via
     // DOMParser/replaceWith are inert per spec — re-create each with
     // createElement so they execute, awaiting onload for src scripts to
