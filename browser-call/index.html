@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VanisSetu AI — Interactive Voice Agent Demo</title>
-    <meta name="description" content="Experience VanisSetu AI voice agent through your browser. Talk to our AI demo agent in Gujarati, Hindi &amp; English.">
+    <title>VanisSetu AI — Live Browser Call</title>
+    <meta name="description" content="Connect directly to your live VanisSetu AI voice agent. Talk in Gujarati, Hindi &amp; English.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -20,7 +20,6 @@
             --green-light: #1a9f6a;
             --green-bright: #3fb950;
             --gold: #D49A2A;
-            --red: #f85149;
             --text-primary: #e6edf3;
             --text-secondary: #8b949e;
             --text-muted: #484f58;
@@ -31,7 +30,9 @@
             min-height: 100vh;
             background: var(--bg-primary);
             color: var(--text-primary);
-            overflow-x: hidden;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
         /* ── Header ── */
@@ -43,8 +44,6 @@
             border-bottom: 1px solid var(--border);
             background: rgba(13,17,23,0.85);
             backdrop-filter: blur(12px);
-            position: sticky;
-            top: 0;
             z-index: 100;
         }
 
@@ -103,70 +102,89 @@
 
         .header-back:hover { color: var(--text-primary); }
 
-        /* ── Main Layout ── */
-        .main {
-            display: grid;
-            grid-template-columns: 420px 1fr;
-            gap: 0;
-            min-height: calc(100vh - 65px);
-        }
-
-        @media (max-width: 900px) {
-            .main {
-                grid-template-columns: 1fr;
-                grid-template-rows: auto 1fr;
-            }
-        }
-
-        /* ── Call Panel ── */
-        .call-panel {
-            border-right: 1px solid var(--border);
-            padding: 32px 28px;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-            background: var(--bg-card);
-        }
-
-        .call-title-row {
+        /* ── Call Screen Area ── */
+        .call-container {
+            flex: 1;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
+            position: relative;
+            padding: 24px;
+            background: radial-gradient(circle at center, rgba(10,92,62,0.12) 0%, rgba(13,17,23,0) 70%);
+        }
+
+        .call-card {
+            text-align: center;
+            max-width: 520px;
+            width: 100%;
+            padding: 48px 32px;
+            border-radius: 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+
+        .avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--green-brand), var(--green-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            margin: 0 auto 24px;
+            border: 2px solid var(--border);
+            box-shadow: 0 0 30px rgba(26,159,106,0.25);
         }
 
         .call-title {
-            font-size: 18px;
-            font-weight: 700;
-            display: flex;
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .call-subtitle {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-bottom: 36px;
+            line-height: 1.6;
+        }
+
+        .loader-dots {
+            display: inline-flex;
+            gap: 8px;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            margin-bottom: 16px;
         }
 
-        .call-title svg {
-            width: 20px;
-            height: 20px;
-            color: var(--green-light);
-        }
-
-        .status-badge {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-            background: rgba(63,185,80,0.12);
-            color: var(--green-bright);
-            border: 1px solid rgba(63,185,80,0.25);
-        }
-
-        .status-badge .dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
+        .loader-dots span {
+            width: 10px;
+            height: 10px;
             background: var(--green-bright);
-            animation: pulse-dot 2s ease-in-out infinite;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .loader-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .loader-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1.0); }
+        }
+
+        .instructions {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            background: rgba(255,255,255,0.02);
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
         @keyframes pulse-dot {
@@ -174,997 +192,83 @@
             50% { opacity: 0.5; transform: scale(0.85); }
         }
 
-        /* Timer */
-        .timer-section {
-            text-align: center;
-            padding: 28px 0;
-        }
-
-        .timer {
-            font-size: 56px;
-            font-weight: 300;
-            letter-spacing: 4px;
-            font-variant-numeric: tabular-nums;
-            color: var(--text-primary);
-        }
-
-        .timer-label {
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin-top: 6px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        /* Sound wave */
-        .sound-wave {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 3px;
-            height: 32px;
-            margin: 8px 0;
-        }
-
-        .sound-wave .bar {
-            width: 4px;
-            border-radius: 4px;
-            background: var(--green-light);
-            animation: wave 1.2s ease-in-out infinite;
-        }
-
-        .sound-wave .bar:nth-child(1) { height: 8px; animation-delay: 0s; }
-        .sound-wave .bar:nth-child(2) { height: 16px; animation-delay: 0.1s; }
-        .sound-wave .bar:nth-child(3) { height: 24px; animation-delay: 0.2s; }
-        .sound-wave .bar:nth-child(4) { height: 32px; animation-delay: 0.3s; }
-        .sound-wave .bar:nth-child(5) { height: 24px; animation-delay: 0.4s; }
-        .sound-wave .bar:nth-child(6) { height: 16px; animation-delay: 0.5s; }
-        .sound-wave .bar:nth-child(7) { height: 8px; animation-delay: 0.6s; }
-
-        .sound-wave.muted .bar {
-            animation: none;
-            height: 4px !important;
-            background: var(--text-muted);
-        }
-
-        @keyframes wave {
-            0%, 100% { transform: scaleY(0.4); }
-            50% { transform: scaleY(1); }
-        }
-
-        /* Participants */
-        .participants {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-
-        .participant {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 14px 16px;
-            border-radius: 12px;
-            background: var(--bg-primary);
-            border: 1px solid var(--border);
-        }
-
-        .participant-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            flex-shrink: 0;
-        }
-
-        .participant-icon.agent {
-            background: linear-gradient(135deg, var(--green-brand), var(--green-light));
-        }
-
-        .participant-icon.user {
-            background: rgba(139,148,158,0.15);
-            border: 1px solid var(--border);
-        }
-
-        .participant-info { flex: 1; }
-
-        .participant-name {
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .participant-status {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-top: 2px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .participant-status .speaking {
-            color: var(--green-bright);
-        }
-
-        .participant-status .silent {
-            color: var(--text-muted);
-        }
-
-        .participant-waves {
-            display: none;
-            align-items: center;
-            gap: 2px;
-            height: 16px;
-        }
-
-        .participant-waves .mini-bar {
-            width: 3px;
-            border-radius: 2px;
-            background: var(--green-bright);
-            animation: wave 0.8s ease-in-out infinite;
-        }
-
-        .participant-waves .mini-bar:nth-child(1) { height: 6px; animation-delay: 0s; }
-        .participant-waves .mini-bar:nth-child(2) { height: 12px; animation-delay: 0.15s; }
-        .participant-waves .mini-bar:nth-child(3) { height: 8px; animation-delay: 0.3s; }
-        .participant-waves .mini-bar:nth-child(4) { height: 14px; animation-delay: 0.1s; }
-
-        /* Controls */
-        .controls {
-            display: flex;
-            gap: 12px;
-            margin-top: auto;
-        }
-
-        .btn-control {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 14px 16px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            font-size: 14px;
-            font-weight: 600;
-            font-family: inherit;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-control:hover {
-            background: var(--bg-card-hover);
-            border-color: var(--text-muted);
-        }
-
-        .btn-control.muted {
-            background: rgba(248,81,73,0.1);
-            border-color: rgba(248,81,73,0.3);
-            color: var(--red);
-        }
-
-        .btn-end {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 14px 16px;
-            border-radius: 12px;
-            border: none;
-            background: linear-gradient(135deg, #da3633, var(--red));
-            color: white;
-            font-size: 14px;
-            font-weight: 600;
-            font-family: inherit;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-end:hover {
-            background: linear-gradient(135deg, #c62828, #da3633);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(248,81,73,0.3);
-        }
-
-        /* Mode footer */
-        .call-footer {
-            display: flex;
-            justify-content: center;
-            gap: 48px;
-            padding-top: 16px;
-            border-top: 1px solid var(--border);
-        }
-
-        .call-footer-item {
-            text-align: center;
-        }
-
-        .call-footer-icon {
-            font-size: 20px;
-            margin-bottom: 4px;
-        }
-
-        .call-footer-label {
-            font-size: 11px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-        }
-
-        .call-footer-value {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-secondary);
-        }
-
-        /* ── Transcript Panel ── */
-        .transcript-panel {
-            display: flex;
-            flex-direction: column;
-            background: var(--bg-primary);
-        }
-
-        .transcript-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 20px 28px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .transcript-title {
-            font-size: 15px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .transcript-count {
-            font-size: 12px;
-            color: var(--text-secondary);
-            font-weight: 400;
-        }
-
-        .live-badge {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 10px;
-            border-radius: 8px;
-            background: rgba(248,81,73,0.1);
-            border: 1px solid rgba(248,81,73,0.2);
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--red);
-        }
-
-        .live-badge .dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--red);
-            animation: pulse-dot 1.5s ease-in-out infinite;
-        }
-
-        .transcript-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 24px 28px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .message {
-            display: flex;
-            flex-direction: column;
-            max-width: 85%;
-            animation: messageIn 0.4s ease-out;
-        }
-
-        .message.agent {
-            align-self: flex-start;
-        }
-
-        .message.user {
-            align-self: flex-end;
-        }
-
-        @keyframes messageIn {
-            from {
-                opacity: 0;
-                transform: translateY(12px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .message-bubble {
-            padding: 12px 16px;
-            border-radius: 16px;
-            font-size: 14px;
-            line-height: 1.6;
-            word-wrap: break-word;
-        }
-
-        .message.agent .message-bubble {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-bottom-left-radius: 4px;
-            color: var(--text-primary);
-        }
-
-        .message.user .message-bubble {
-            background: linear-gradient(135deg, var(--green-brand), #0d7a50);
-            border-bottom-right-radius: 4px;
-            color: white;
-        }
-
-        .message-time {
-            font-size: 11px;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-
-        .message.agent .message-time {
-            margin-left: 4px;
-        }
-
-        .message.user .message-time {
-            text-align: right;
-            margin-right: 4px;
-        }
-
-        /* Typing indicator */
-        .typing-indicator {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            padding: 12px 16px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            border-bottom-left-radius: 4px;
-            width: fit-content;
-        }
-
-        .typing-indicator .dot-typing {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--text-secondary);
-            animation: typing 1.4s ease-in-out infinite;
-        }
-
-        .typing-indicator .dot-typing:nth-child(2) { animation-delay: 0.2s; }
-        .typing-indicator .dot-typing:nth-child(3) { animation-delay: 0.4s; }
-
-        @keyframes typing {
-            0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
-            30% { opacity: 1; transform: translateY(-4px); }
-        }
-
-        /* Setup / Start Call Screen */
-        .call-start-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(13,17,23,0.95);
-            backdrop-filter: blur(8px);
-            z-index: 150;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .call-start-card {
-            text-align: center;
-            padding: 48px 40px;
-            border-radius: 24px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            max-width: 480px;
-            width: 90%;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-        }
-
-        .start-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--green-brand), var(--green-light));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            margin: 0 auto 24px;
-            border: 2px solid var(--border);
-            box-shadow: 0 0 20px rgba(26,159,106,0.2);
-        }
-
-        .start-title {
-            font-size: 24px;
-            font-weight: 800;
-            margin-bottom: 12px;
-            color: var(--text-primary);
-        }
-
-        .start-subtitle {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-bottom: 32px;
-            line-height: 1.6;
-        }
-
-        .btn-start-call {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 16px 36px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, var(--green-brand), var(--green-light));
-            color: white;
-            border: none;
-            font-size: 16px;
-            font-weight: 700;
-            font-family: inherit;
-            cursor: pointer;
-            transition: all 0.2s;
-            width: 100%;
-        }
-
-        .btn-start-call:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(26,159,106,0.35);
-        }
-
-        /* End screen */
-        .call-ended-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(13,17,23,0.92);
-            backdrop-filter: blur(8px);
-            z-index: 200;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .call-ended-overlay.active {
-            display: flex;
-        }
-
-        .call-ended-card {
-            text-align: center;
-            padding: 48px 56px;
-            border-radius: 20px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            max-width: 440px;
-            width: 90%;
-            animation: fadeUp 0.5s ease-out;
-        }
-
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .ended-icon {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background: rgba(63,185,80,0.12);
-            border: 1px solid rgba(63,185,80,0.25);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 28px;
-        }
-
-        .ended-title {
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .ended-subtitle {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-            line-height: 1.5;
-        }
-
-        .ended-duration {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-bottom: 28px;
-        }
-
-        .btn-home {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 28px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, var(--green-brand), var(--green-light));
-            color: white;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 600;
-            font-family: inherit;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-home:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 20px rgba(26,159,106,0.3);
-        }
-
-        /* Demo notice */
-        .demo-notice {
-            padding: 12px 28px;
-            background: rgba(212,154,42,0.08);
-            border-top: 1px solid rgba(212,154,42,0.15);
-            font-size: 12px;
-            color: var(--gold);
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        /* Scrollbar */
-        .transcript-messages::-webkit-scrollbar {
-            width: 6px;
-        }
-        .transcript-messages::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .transcript-messages::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 3px;
-        }
-
-        @media (max-width: 900px) {
-            .header { padding: 12px 16px; }
-            .call-panel { padding: 20px 16px; }
-            .transcript-messages { padding: 16px; }
-            .transcript-header { padding: 14px 16px; }
-            .timer { font-size: 40px; }
-            .main { min-height: auto; }
-            .call-panel { border-right: none; border-bottom: 1px solid var(--border); }
+        /* ── Edesy Widget Repositioning & Styling ── */
+        /* Center the Edesy widget container on this page */
+        #voice-widget-root {
+            position: fixed !important;
+            left: 50% !important;
+            top: 55% !important;
+            transform: translate(-50%, -50%) !important;
+            bottom: auto !important;
+            right: auto !important;
+            z-index: 100000 !important;
+        }
+
+        /* Hide widget button backdrop/shadow to blend with the card */
+        #voice-widget-root::shadow .vw-button {
+            box-shadow: 0 10px 30px rgba(10,92,62,0.3) !important;
         }
     </style>
 </head>
 <body>
-    <!-- Start Call Overlay (Unlocks Mic and Speech Synthesis) -->
-    <div class="call-start-overlay" id="startOverlay">
-        <div class="call-start-card">
-            <div class="start-avatar">🤖</div>
-            <h1 class="start-title">વૉઇસ એજન્ટ સાથે વાત કરો</h1>
-            <p class="start-subtitle">
-                વનિસેતુ એઆઈ સાથે લાઈવ વાતચીત શરૂ કરો. ડેમોમાં ગુજરાતી, હિન્દી અને અંગ્રેજી ભાષા સપોર્ટેડ છે.<br>
-                માઇક્રોફોન અને સ્પીકરની પરમિશનની જરૂર પડશે.
-            </p>
-            <button class="btn-start-call" onclick="startCall()">
-                📞 કૉલ શરૂ કરો / Start Call
-            </button>
-        </div>
-    </div>
-
     <!-- Header -->
     <header class="header">
         <a href="/" class="logo">
             <div class="logo-dot"></div>
             <span>VanisSetu AI</span>
         </a>
-        <div class="header-badge">Live Voice Agent</div>
+        <div class="header-badge">Edesy Live Agent</div>
         <a href="/" class="header-back">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             Back to Home
         </a>
     </header>
 
-    <!-- Main Layout -->
-    <div class="main">
-        <!-- Call Panel -->
-        <div class="call-panel">
-            <div class="call-title-row">
-                <div class="call-title">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.86 19.86 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.86 19.86 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-                    Voice Assistant
-                </div>
-                <div class="status-badge" id="statusBadge" style="display: none;">
-                    <span class="dot"></span>
-                    Connected
-                </div>
+    <!-- Main Content -->
+    <div class="call-container">
+        <div class="call-card">
+            <div class="avatar">🎙️</div>
+            <h1 class="call-title">લાઇવ કૉલ કનેક્ટ થઈ રહ્યો છે</h1>
+            <p class="call-subtitle">Connecting you to the live VanisSetu AI agent powered by Edesy...</p>
+            
+            <div class="loader-dots">
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
 
-            <div class="timer-section">
-                <div class="sound-wave muted" id="soundWave">
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                </div>
-                <div class="timer" id="timer">00:00</div>
-                <div class="timer-label">Duration</div>
-            </div>
-
-            <div class="participants">
-                <div class="participant">
-                    <div class="participant-icon agent">🤖</div>
-                    <div class="participant-info">
-                        <div class="participant-name">VanisSetu AI</div>
-                        <div class="participant-status">
-                            <span id="agentStatus">Gujarati, Hindi &amp; English</span>
-                        </div>
-                    </div>
-                    <div class="participant-waves" id="agentWaves">
-                        <div class="mini-bar"></div>
-                        <div class="mini-bar"></div>
-                        <div class="mini-bar"></div>
-                        <div class="mini-bar"></div>
-                    </div>
-                </div>
-
-                <div class="participant">
-                    <div class="participant-icon user">👤</div>
-                    <div class="participant-info">
-                        <div class="participant-name">You (તમે)</div>
-                        <div class="participant-status">
-                            <span id="userStatus">microphone not active</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="controls">
-                <button class="btn-control" id="muteBtn" onclick="toggleMute()" disabled>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10v1a7 7 0 01-14 0v-1M12 18.5v3.5M8 22h8"/></svg>
-                    Mute Mic
-                </button>
-                <button class="btn-end" id="endBtn" onclick="endCall()" disabled>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.68 13.31a16 16 0 003.41 2.6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92v3a2 2 0 01-2.18 2 19.86 19.86 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.86 19.86 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-                    End Call
-                </button>
-            </div>
-
-            <div class="call-footer">
-                <div class="call-footer-item">
-                    <div class="call-footer-icon">🎙️</div>
-                    <div class="call-footer-value">Interactive</div>
-                    <div class="call-footer-label">Mode</div>
-                </div>
-                <div class="call-footer-item">
-                    <div class="call-footer-icon">📡</div>
-                    <div class="call-footer-value" style="color: var(--green-bright);">Real-time</div>
-                    <div class="call-footer-label">Voice</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Transcript Panel -->
-        <div class="transcript-panel">
-            <div class="transcript-header">
-                <div class="transcript-title">
-                    💬 Real-time Transcript
-                    <span class="transcript-count" id="msgCount">(0 messages)</span>
-                </div>
-                <div class="live-badge">
-                    <span class="dot"></span>
-                    Live Speech
-                </div>
-            </div>
-            <div class="transcript-messages" id="transcript">
-                <!-- Messages will be injected here -->
-            </div>
-            <div class="demo-notice">
-                📢 Start speaking after clicking "Start Call". The AI listens and responds dynamically in Gujarati, Hindi or English.
+            <div class="instructions">
+                💡 કૃપા કરીને ઉપર પોપ-અપ અથવા સેન્ટરમાં આપેલા કૉલ બટન પર ક્લિક કરો અને માઇક્રોફોનની પરમિશન આપો.
             </div>
         </div>
     </div>
 
-    <!-- End Call Overlay -->
-    <div class="call-ended-overlay" id="endedOverlay">
-        <div class="call-ended-card">
-            <div class="ended-icon">✅</div>
-            <div class="ended-title">Call Ended</div>
-            <div class="ended-subtitle">
-                Thank you for trying VanisSetu AI voice agent demo!<br>
-                Your voice was transcribed and analyzed successfully.
-            </div>
-            <div class="ended-duration" id="endedDuration">Duration: 00:00</div>
-            <a href="/" class="btn-home">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 6l6-4.5L14 6v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 14V8h4v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Back to VanisSetu AI
-            </a>
-        </div>
-    </div>
+    <!-- Edesy Voice Agent Widget Script -->
+    <script
+      src="https://voice-agent.edesy.in/widget/voice-widget.js"
+      data-api-key="wk_live_5d91df39c3b562e81e030c250b6a4c40"
+      async
+    ></script>
 
+    <!-- Auto-Trigger Call Widget -->
     <script>
-        // ── State ──
-        let seconds = 0;
-        let timerInterval = null;
-        let isMuted = false;
-        let callActive = false;
-        let msgCount = 0;
-        let speechSynth = window.speechSynthesis;
-        let recognition = null;
-        let isAgentSpeaking = false;
-
-        // Initialize Speech Recognition
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (SpeechRecognition) {
-            recognition = new SpeechRecognition();
-            recognition.continuous = true;
-            recognition.interimResults = false;
-            recognition.lang = 'gu-IN'; // Defaults to Gujarati listening
-
-            recognition.onresult = function(event) {
-                if (!callActive || isMuted || isAgentSpeaking) return;
-                const last = event.results.length - 1;
-                const text = event.results[last][0].transcript.trim();
-                if (text) {
-                    handleUserSpeech(text);
-                }
-            };
-
-            recognition.onerror = function(event) {
-                console.error("Speech recognition error:", event.error);
-                if (event.error === 'not-allowed') {
-                    document.getElementById('userStatus').innerHTML = '🎤 <span class="silent">Mic blocked</span>';
-                }
-            };
-
-            recognition.onend = function() {
-                // Restart if call is still active, agent is not speaking and we are not muted
-                if (callActive && !isMuted && !isAgentSpeaking) {
-                    try { recognition.start(); } catch(e) {}
-                }
-            };
-        }
-
-        // ── Start Call ──
-        function startCall() {
-            callActive = true;
-            document.getElementById('startOverlay').style.display = 'none';
-            document.getElementById('statusBadge').style.display = 'flex';
-            document.getElementById('muteBtn').removeAttribute('disabled');
-            document.getElementById('endBtn').removeAttribute('disabled');
-            document.getElementById('soundWave').classList.remove('muted');
-            document.getElementById('userStatus').innerHTML = '🎤 <span class="speaking">Listening...</span>';
-
-            // Start timer
-            startTimer();
-
-            // First welcome message from Agent
-            agentSay("નમસ્તે! હું વનિસેતુ એઆઈ ડેમો એજન્ટ બોલું છું. હું તમારી રિયલ એસ્ટેટ અથવા કોલ સેન્ટર વિશે શું મદદ કરી શકું?");
-
-            // Start Speech Recognition
-            if (recognition) {
-                try { recognition.start(); } catch(e) {}
-            }
-        }
-
-        // ── Timer ──
-        function startTimer() {
-            timerInterval = setInterval(function() {
-                if (!callActive) return;
-                seconds++;
-                var m = Math.floor(seconds / 60).toString().padStart(2, '0');
-                var s = (seconds % 60).toString().padStart(2, '0');
-                document.getElementById('timer').textContent = m + ':' + s;
-            }, 1000);
-        }
-
-        function getTimeStr() {
-            var now = new Date();
-            return now.getHours().toString().padStart(2,'0') + ':' +
-                   now.getMinutes().toString().padStart(2,'0') + ':' +
-                   now.getSeconds().toString().padStart(2,'0');
-        }
-
-        // ── Speech Synthesis (Agent Speaks) ──
-        function agentSay(text) {
-            if (!callActive) return;
-            isAgentSpeaking = true;
-            
-            // Stop listening to prevent agent hearing its own voice
-            if (recognition) {
-                try { recognition.stop(); } catch(e) {}
-            }
-
-            // UI feedback
-            showTyping();
-            document.getElementById('userStatus').innerHTML = '🎤 <span class="silent">Waiting...</span>';
-
-            // Simulated think time
-            setTimeout(() => {
-                removeTyping();
-                addMessage('agent', text);
-
-                document.getElementById('agentStatus').innerHTML = '🔊 <span class="speaking">Speaking...</span>';
-                document.getElementById('agentWaves').style.display = 'flex';
-
-                const utterance = new SpeechSynthesisUtterance(text);
-                
-                // Smart Language Selection
-                if (/^[a-zA-Z0-9\s,.]+$/.test(text)) {
-                    utterance.lang = 'en-US';
-                } else if (text.includes('hai') || text.includes('ho') || text.includes('kya') || text.includes('accha')) {
-                    utterance.lang = 'hi-IN';
-                } else {
-                    utterance.lang = 'gu-IN'; // Default to Gujarati speech
-                }
-
-                utterance.onend = function() {
-                    isAgentSpeaking = false;
-                    document.getElementById('agentStatus').textContent = 'Gujarati, Hindi & English';
-                    document.getElementById('agentWaves').style.display = 'none';
-                    document.getElementById('userStatus').innerHTML = '🎤 <span class="speaking">Listening...</span>';
-                    
-                    // Resume listening
-                    if (callActive && !isMuted) {
-                        try { recognition.start(); } catch(e) {}
-                    }
-                };
-
-                utterance.onerror = function() {
-                    utterance.onend();
-                };
-
-                speechSynth.speak(utterance);
-            }, 1200);
-        }
-
-        // ── Handle User Input ──
-        function handleUserSpeech(text) {
-            addMessage('user', text);
-            
-            // Local Conversational Rules Engine (Gujarat Context)
-            const input = text.toLowerCase();
-            let reply = "";
-
-            if (input.includes("નમસ્તે") || input.includes("હેલો") || input.includes("kem cho") || input.includes("કેમ છો") || input.includes("hello") || input.includes("hi")) {
-                reply = "નમસ્તે! મને ખુશી છે કે તમે વનિસેતુ પર કોલ કર્યો. શું તમે કોઈ પ્રોપર્ટી ખરીદવા કે વેચવા માંગો છો?";
-            } 
-            else if (input.includes("ખરીદ") || input.includes("વેચ") || input.includes("લેવ") || input.includes("જોઈ") || input.includes("flat") || input.includes("house") || input.includes("villa") || input.includes("બતાવો")) {
-                reply = "ચોક્કસ, અમારા રિયલ એસ્ટેટ પ્લેટફોર્મ પર લાઈવ એજન્ટ ઉપલબ્ધ છે. તમારું અંદાજીત બજેટ કેટલું છે? અને કયા શહેરમાં પ્રોપર્ટી શોધો છો?";
-            }
-            else if (input.includes("કરોડ") || input.includes("લાખ") || input.includes("બજેટ") || input.includes("crore") || input.includes("lakh") || input.includes("budget") || input.includes("૧૦૦") || input.includes("50")) {
-                reply = "સમજાઈ ગયું. તે કિંમતમાં અમારી પાસે ઘણા સારા 2 BHK અને 3 BHK પ્રોપર્ટી ઓપ્શન ઉપલબ્ધ છે. શું હું આ વિગતો તમારા વોટ્સએપ પર મોકલી આપું?";
-            }
-            else if (input.includes("મોકલો") || input.includes("હા") || input.includes("મોકલી આપો") || input.includes("yes") || input.includes("ok") || input.includes("whatsapp")) {
-                reply = "સરસ! કૃપા કરીને તમારો ૧૦ આંકડાનો વોટ્સએપ નંબર જણાવશો?";
-            }
-            else if (/\d{5,12}/.test(input) || input.includes("નંબર") || input.includes("number") || input.includes("નમ્બર")) {
-                reply = "આભાર! મેં તમારો નંબર સેવ કરી લીધો છે અને વિગતો વોટ્સએપ પર મોકલી દીધી છે. વનિસેતુ વોઈસ એજન્ટ ડેમો વાપરવા બદલ આભાર!";
-            }
-            else if (input.includes("hindi") || input.includes("હિન્દી") || input.includes("हिंदी")) {
-                reply = "जी बिल्कुल, मैं हिंदी में भी बात कर सकती हूँ। क्या आप रियल एस्टेट प्रॉपर्टी खरीदना चाहते हैं या कॉल सेंटर डेमो देखना चाहते हैं?";
-            }
-            else if (input.includes("english") || input.includes("અંગ્રેજી")) {
-                reply = "Sure, I can speak in English as well. Are you looking to buy a property, or would you like to know more about VanisSetu AI solutions?";
-            }
-            else {
-                // Generative fallback
-                reply = "હું બરાબર સમજી ન શકી. શું તમે ફરીથી કહી શકશો? તમે રિયલ એસ્ટેટ પ્રોપર્ટી અથવા કોલ સેન્ટર સેવાઓ વિશે પૂછી શકો છો.";
-            }
-
-            agentSay(reply);
-        }
-
-        // ── Transcript UI ──
-        function addMessage(type, text) {
-            var transcript = document.getElementById('transcript');
-            var div = document.createElement('div');
-            div.className = 'message ' + type;
-            div.innerHTML =
-                '<div class="message-bubble">' + text + '</div>' +
-                '<div class="message-time">' + getTimeStr() + '</div>';
-
-            transcript.appendChild(div);
-            transcript.scrollTop = transcript.scrollHeight;
-
-            msgCount++;
-            document.getElementById('msgCount').textContent = '(' + msgCount + ' messages)';
-        }
-
-        function showTyping() {
-            var transcript = document.getElementById('transcript');
-            var existing = document.getElementById('typingIndicator');
-            if (existing) return;
-
-            var div = document.createElement('div');
-            div.className = 'message agent';
-            div.id = 'typingIndicator';
-            div.innerHTML =
-                '<div class="typing-indicator">' +
-                '<div class="dot-typing"></div>' +
-                '<div class="dot-typing"></div>' +
-                '<div class="dot-typing"></div>' +
-                '</div>';
-            transcript.appendChild(div);
-            transcript.scrollTop = transcript.scrollHeight;
-        }
-
-        function removeTyping() {
-            var typing = document.getElementById('typingIndicator');
-            if (typing) typing.remove();
-        }
-
-        // ── Toggle Mute ──
-        function toggleMute() {
-            isMuted = !isMuted;
-            var btn = document.getElementById('muteBtn');
-            var wave = document.getElementById('soundWave');
-            var userStatus = document.getElementById('userStatus');
-
-            if (isMuted) {
-                if (recognition) {
-                    try { recognition.stop(); } catch(e) {}
-                }
-                btn.classList.add('muted');
-                btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"/><path d="M9 9v3a3 3 0 005.12 2.12M15 9.34V4a3 3 0 00-5.94-.6"/><path d="M17 16.95A7 7 0 015 12v-2m14 0v2c0 .76-.12 1.49-.34 2.18"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> Unmute';
-                wave.classList.add('muted');
-                userStatus.innerHTML = '🎤 <span class="silent">Muted (માઇક બંધ છે)</span>';
-            } else {
-                btn.classList.remove('muted');
-                btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10v1a7 7 0 01-14 0v-1M12 18.5v3.5M8 22h8"/></svg> Mute Mic';
-                wave.classList.remove('muted');
-                userStatus.innerHTML = '🎤 <span class="speaking">Listening...</span>';
-                if (callActive && !isAgentSpeaking) {
-                    try { recognition.start(); } catch(e) {}
+        // Check for widget element and trigger call automatically
+        const checkWidgetInterval = setInterval(() => {
+            const widgetRoot = document.getElementById('voice-widget-root');
+            if (widgetRoot && widgetRoot.shadowRoot) {
+                const callBtn = widgetRoot.shadowRoot.querySelector('.vw-button');
+                if (callBtn) {
+                    // Trigger click to open the Edesy dialer
+                    callBtn.click();
+                    clearInterval(checkWidgetInterval);
                 }
             }
-        }
+        }, 300);
 
-        // ── End Call ──
-        function endCall() {
-            callActive = false;
-            clearInterval(timerInterval);
-
-            if (recognition) {
-                try { recognition.stop(); } catch(e) {}
-            }
-            if (speechSynth) {
-                speechSynth.cancel();
-            }
-
-            var m = Math.floor(seconds / 60).toString().padStart(2, '0');
-            var s = (seconds % 60).toString().padStart(2, '0');
-            document.getElementById('endedDuration').textContent = 'Duration: ' + m + ':' + s;
-
-            document.getElementById('endedOverlay').classList.add('active');
-
-            // Update status
-            document.getElementById('statusBadge').innerHTML = '<span class="dot" style="background:var(--red);animation:none;"></span> Disconnected';
-            document.getElementById('statusBadge').style.background = 'rgba(248,81,73,0.12)';
-            document.getElementById('statusBadge').style.color = 'var(--red)';
-            document.getElementById('statusBadge').style.borderColor = 'rgba(248,81,73,0.25)';
-
-            // Stop waves
-            document.getElementById('soundWave').classList.add('muted');
-            document.getElementById('userStatus').innerHTML = '🎤 <span class="silent">Disconnected</span>';
-        }
+        // Fail-safe clear after 10 seconds
+        setTimeout(() => {
+            clearInterval(checkWidgetInterval);
+        }, 10000);
     </script>
 </body>
 </html>
