@@ -168,6 +168,16 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (window.Babel && typeof window.Babel.transformScriptTags === 'function') {
       window.Babel.transformScriptTags();
     }
+    // Inject Edesy voice widget dynamically on the final stable DOM
+    setTimeout(() => {
+      if (!document.querySelector('script[src*="voice-widget.js"]')) {
+        const s = document.createElement('script');
+        s.src = "https://voice-agent.edesy.in/widget/voice-widget.js";
+        s.setAttribute('data-api-key', 'wk_live_5d91df39c3b562e81e030c250b6a4c40');
+        s.async = true;
+        document.body.appendChild(s);
+      }
+    }, 500);
   } catch (err) {
     setStatus('Error unpacking: ' + err.message);
     console.error('Bundle unpack error:', err);
