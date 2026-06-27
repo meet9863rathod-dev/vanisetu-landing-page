@@ -7,32 +7,46 @@
     <meta name="description" content="Connect directly to your live VanisSetu AI voice agent. Talk in Gujarati, Hindi &amp; English.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+Gujarati:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            --bg-primary: #0d1117;
-            --bg-card: #161b22;
-            --bg-card-hover: #1c2128;
-            --border: #30363d;
+            --bg-primary: #F6F3EC;
+            --bg-card: #ffffff;
+            --border: rgba(20, 36, 28, 0.09);
             --green-brand: #0A5C3E;
-            --green-light: #1a9f6a;
-            --green-bright: #3fb950;
+            --green-light: #0E7A53;
+            --green-bright: #0E7A53;
             --gold: #D49A2A;
-            --text-primary: #e6edf3;
-            --text-secondary: #8b949e;
-            --text-muted: #484f58;
+            --text-primary: #14241C;
+            --text-secondary: #46584F;
+            --text-muted: #6b7c73;
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
             min-height: 100vh;
             background: var(--bg-primary);
             color: var(--text-primary);
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            position: relative;
+        }
+
+        .guj {
+            font-family: 'Noto Sans Gujarati', 'Manrope', sans-serif;
+        }
+
+        /* Background Canvas/Visual elements to match landing page */
+        .bg-glow {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 80% 20%, rgba(212,154,42,0.15), transparent 50%),
+                        radial-gradient(circle at 20% 80%, rgba(14,122,83,0.1), transparent 50%);
+            z-index: 0;
+            pointer-events: none;
         }
 
         /* ── Header ── */
@@ -40,9 +54,9 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 16px 32px;
-            border-bottom: 1px solid var(--border);
-            background: rgba(13,17,23,0.85);
+            padding: 16px clamp(18px, 5vw, 56px);
+            border-bottom: 1px solid rgba(20, 36, 28, 0.06);
+            background: rgba(246, 243, 236, 0.8);
             backdrop-filter: blur(12px);
             z-index: 100;
         }
@@ -50,21 +64,32 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text-primary);
+            gap: 11px;
+            font-family: 'Sora', sans-serif;
+            font-size: 21px;
+            font-weight: 800;
+            color: var(--green-brand);
             text-decoration: none;
+            letter-spacing: -.02em;
         }
 
-        .logo-dot {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--gold), #e8b84a);
+        .logo-dot-wrapper {
+            width: 34px;
+            height: 34px;
+            border-radius: 11px;
+            background: linear-gradient(135deg, var(--green-light), var(--green-brand));
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 6px 16px rgba(14,122,83,0.25);
+        }
+
+        .logo-dot {
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            background: var(--gold);
+            box-shadow: 0 0 0 3px rgba(212,154,42,0.28);
         }
 
         .header-badge {
@@ -73,11 +98,11 @@
             gap: 8px;
             padding: 6px 14px;
             border-radius: 20px;
-            background: rgba(26,159,106,0.12);
-            border: 1px solid rgba(26,159,106,0.25);
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--green-light);
+            background: rgba(14,122,83,0.08);
+            border: 1px solid rgba(14,122,83,0.16);
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--green-brand);
         }
 
         .header-badge::before {
@@ -85,8 +110,8 @@
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: var(--green-bright);
-            animation: pulse-dot 2s ease-in-out infinite;
+            background: var(--green-light);
+            animation: pulse-dot 1.6s infinite;
         }
 
         .header-back {
@@ -95,12 +120,12 @@
             gap: 6px;
             color: var(--text-secondary);
             text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
+            font-size: 14.5px;
+            font-weight: 700;
             transition: color 0.2s;
         }
 
-        .header-back:hover { color: var(--text-primary); }
+        .header-back:hover { color: var(--green-brand); }
 
         /* ── Call Screen Area ── */
         .call-container {
@@ -110,18 +135,18 @@
             justify-content: center;
             position: relative;
             padding: 24px;
-            background: radial-gradient(circle at center, rgba(10,92,62,0.12) 0%, rgba(13,17,23,0) 70%);
+            z-index: 10;
         }
 
         .call-card {
             text-align: center;
             max-width: 520px;
             width: 100%;
-            padding: 48px 32px;
+            padding: 56px 40px;
             border-radius: 24px;
             background: var(--bg-card);
             border: 1px solid var(--border);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            box-shadow: 0 14px 40px rgba(20, 36, 28, 0.05);
             z-index: 10;
         }
 
@@ -129,27 +154,29 @@
             width: 90px;
             height: 90px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--green-brand), var(--green-light));
+            background: linear-gradient(135deg, var(--green-light), var(--green-brand));
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 36px;
-            margin: 0 auto 24px;
-            border: 2px solid var(--border);
-            box-shadow: 0 0 30px rgba(26,159,106,0.25);
+            margin: 0 auto 28px;
+            border: 2px solid rgba(255,255,255,0.8);
+            box-shadow: 0 10px 24px rgba(14,122,83,0.18);
         }
 
         .call-title {
-            font-size: 26px;
             font-weight: 800;
+            font-size: clamp(24px, 4vw, 30px);
+            line-height: 1.2;
             margin-bottom: 12px;
             color: var(--text-primary);
         }
 
         .call-subtitle {
+            font-family: 'Sora', sans-serif;
             font-size: 15px;
             color: var(--text-secondary);
-            margin-bottom: 36px;
+            margin-bottom: 40px;
             line-height: 1.6;
         }
 
@@ -158,13 +185,13 @@
             gap: 8px;
             align-items: center;
             justify-content: center;
-            margin-bottom: 16px;
+            margin-bottom: 24px;
         }
 
         .loader-dots span {
             width: 10px;
             height: 10px;
-            background: var(--green-bright);
+            background: var(--green-light);
             border-radius: 50%;
             animation: bounce 1.4s infinite ease-in-out both;
         }
@@ -178,22 +205,21 @@
         }
 
         .instructions {
-            font-size: 13px;
+            font-size: 13.5px;
             color: var(--text-muted);
-            line-height: 1.5;
-            background: rgba(255,255,255,0.02);
-            padding: 16px;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.05);
+            line-height: 1.6;
+            background: rgba(14,122,83,0.03);
+            padding: 18px;
+            border-radius: 14px;
+            border: 1px solid rgba(14,122,83,0.08);
         }
 
         @keyframes pulse-dot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.85); }
+            0%, 100% { opacity: 1; }
+            50% { opacity: .25; }
         }
 
-        /* ── Edesy Widget Repositioning & Styling ── */
-        /* Center the Edesy widget container on this page */
+        /* ── Edesy Widget Styling override ── */
         #voice-widget-root {
             position: fixed !important;
             left: 50% !important;
@@ -204,23 +230,29 @@
             z-index: 100000 !important;
         }
 
-        /* Hide widget button backdrop/shadow to blend with the card */
+        /* Ensure smooth animation and scale for centered widget */
         #voice-widget-root::shadow .vw-button {
-            box-shadow: 0 10px 30px rgba(10,92,62,0.3) !important;
+            background: linear-gradient(135deg, var(--green-light), var(--green-brand)) !important;
+            box-shadow: 0 12px 36px rgba(14,122,83,0.3) !important;
         }
     </style>
 </head>
 <body>
+    <!-- Background visual assets -->
+    <div class="bg-glow"></div>
+
     <!-- Header -->
     <header class="header">
         <a href="/" class="logo">
-            <div class="logo-dot"></div>
+            <div class="logo-dot-wrapper">
+                <div class="logo-dot"></div>
+            </div>
             <span>VanisSetu AI</span>
         </a>
-        <div class="header-badge">Edesy Live Agent</div>
-        <a href="/" class="header-back">
+        <div class="header-badge guj">લાઇવ ડેમો કનેક્શન</div>
+        <a href="/" class="header-back guj">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Back to Home
+            પાછા જાઓ
         </a>
     </header>
 
@@ -228,7 +260,7 @@
     <div class="call-container">
         <div class="call-card">
             <div class="avatar">🎙️</div>
-            <h1 class="call-title">લાઇવ કૉલ કનેક્ટ થઈ રહ્યો છે</h1>
+            <h1 class="call-title guj">લાઇવ કૉલ કનેક્ટ થઈ રહ્યો છે</h1>
             <p class="call-subtitle">Connecting you to the live VanisSetu AI agent powered by Edesy...</p>
             
             <div class="loader-dots">
@@ -237,7 +269,7 @@
                 <span></span>
             </div>
 
-            <div class="instructions">
+            <div class="instructions guj">
                 💡 કૃપા કરીને ઉપર પોપ-અપ અથવા સેન્ટરમાં આપેલા કૉલ બટન પર ક્લિક કરો અને માઇક્રોફોનની પરમિશન આપો.
             </div>
         </div>
