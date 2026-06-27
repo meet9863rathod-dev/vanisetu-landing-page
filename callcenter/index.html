@@ -139,6 +139,10 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Rename brand: VaniSetu -> VanisSetu AI
     template = template.replace(/VaniSetu(\s+AI)?/g, 'VanisSetu AI');
 
+    // Update phone numbers
+    template = template.split('7698877447').join('8031139484');
+    template = template.split('76988 77447').join('80311 39484');
+
     // Make Edesy widget call button robust with polling and selector fallbacks
     template = template.replace(
       /const\s+r\s*=\s*document\.getElementById\('voice-widget-root'\);[\s\S]*?if\s*\(b\)\s*b\.click\(\);/g,
