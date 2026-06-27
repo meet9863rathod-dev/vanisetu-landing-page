@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // Make browser call button click redirect to browser-call page
     const browserCallUrl = window.location.protocol === 'file:' ? (window.location.pathname.includes('/realestate/') || window.location.pathname.includes('/callcenter/') ? '../browser-call/index.html' : 'browser-call/index.html') : '/browser-call/';
-    template = template.replace('class="guj btn-web-call"', `class="guj btn-web-call" onclick="window.location.href='${browserCallUrl}'"`);
+    template = template.replace(/<button class="guj btn-web-call"([\s\S]*?)<\/button>/g, `<a href="${browserCallUrl}" style="text-decoration:none"><button class="guj btn-web-call"$1</button></a>`);
 
     // Parse the template and swap the root element. Scripts inserted via
     // DOMParser/replaceWith are inert per spec — re-create each with
